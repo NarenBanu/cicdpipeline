@@ -1,1 +1,3 @@
 this is a test samplefile that has been created nely
+
+this is another line for commiting the message
