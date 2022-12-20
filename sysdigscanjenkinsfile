@@ -1,0 +1,56 @@
+pipeline{
+    agent any
+         parameters{
+            booleanParam(defaultValue: false, description: '', name: ui_app')}
+            environment {
+            IMAGE_NAME = 'admin'
+    }           
+stages("clone") {
+  stage {
+    steps{
+        script{
+            if(params.ui_app){
+            git branch: '$BRANCH' , credentialsId: '', url: 'https://github.com/NarenBanu/cicdpipeline.git'
+        }else{
+            echo "please select app in build parameters"
+            
+            }
+            
+            }
+            
+            }
+            
+        }
+  stage("Build Docker Image"){
+        steps{
+              script{
+                  if(params.ui_app){
+                     sh "docker build -t ${IMAGE_NAME} . "
+              }else{
+                     echo "please select app name in build with paramters"
+                     }
+                  
+            }
+            }
+            
+            
+  stage("Image scanning"){
+      stage{
+          steps{
+              scripts{
+                  sh " trivy image ${IMAGE_NAME} > scanning.txt"
+                  }
+                  }
+   stage("email notification"){
+        steps{
+            emailext( attachmentsPattern: 'scanning.txt, body: """<p> Image Scanning Report</p>
+            <p> please go to the Jenkins URL and check:  ${env.BUILD_URL} </P>
+            <P> https://sonarqube.com </p>""", mimeType: 'text/html', recipientProviders: [buildUser(), culprits(), developers(), brokenBuildSuspects()], subject: """${env.JOB_NAME}-${BRANCH}-${BUILD_NUMBER}-${currentBuild.currentResult}""", to: 'narendar.amduri@gmail.com')
+            }
+            }
+            }
+            }
+                 
+                  
+                  
+              
