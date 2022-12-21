@@ -1,0 +1,76 @@
+pipeline{
+    agent any 
+    parameters{
+      stringParameters(name: 'firstName', default: ' ', description: 'enter firstname')
+      #other way to define the paarmeters using directive declarive through pipeline syntax option
+      string description: "enter lastname', name: 'lastName'
+      choice choices: ['dev','qa',prod'], description: 'enter choices', name: appEnv
+      }
+    environment{
+        PATH="/opt/maven3/bin:$PATH"
+     }
+           stages{
+            stage("Git Checkout"){
+                steps{
+                   git credentialsId: 'id', url: "https://github.com/NarenBanu/cicdpipeline.git"
+                      }
+                      
+                  }
+           stage("Maven Build"){
+               steps{
+                  scripts{
+                  sh "mvn clean package"
+                         }
+                      }
+                   }
+#using when condition
+           stage('dev'){
+                when{
+                expression{
+                          params.appEnv== 'dev'
+                          }
+                      }
+            steps{
+                      echo "deploy to dev environment"
+                 }
+                }
+ #using if condition
+         stage("if condition")
+         {
+           steps{
+                    if(params.appEnv)
+                    {
+                      echo "this is ${params.appEnv}"
+                      }else{
+                      echo "this is not a params env"
+                      }
+                      }
+           stage("Test"){
+                  steps{
+                        scripts{
+                        echo "Hi ${params.firstName}, ${params.lastName} Welcome to Jenkins tutorial"
+                              }
+                         }
+                      }
+           stage("Build Docker Image"){
+                    steps{
+                        scripts{
+                            }
+                        }
+                   }
+           stage("Push Image to Docker Hub"){
+                  steps{
+                        scripts{
+                        }
+                  }
+            }
+            
+                            
+                            
+                  
+                         
+                      
+                      
+                      
+                      
+                  
