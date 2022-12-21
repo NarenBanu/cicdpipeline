@@ -33,10 +33,19 @@ pipeline{
             steps{
                       echo "deploy to dev environment"
                  }
+                }    
+          stage("prod"){
+                when{
+                       expression{
+                            params.appEnv == "prod"
+                          }
+                    }
+                steps{
+                        echo "deploy to prod environment"
                 }
+          }
  #using if condition
-         stage("if condition")
-         {
+         stage("if condition"){
            steps{
                     if(params.appEnv)
                     {
