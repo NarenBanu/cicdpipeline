@@ -1,7 +1,7 @@
 pipeline{
     agent any
          parameters{
-            booleanParam(defaultValue: false, description: '', name: ui_app')}
+            booleanParam(defaultValue: false, description: '', name: 'ui_app')}
             environment {
             IMAGE_NAME = 'admin'
     }           
@@ -10,6 +10,7 @@ stages("clone") {
     steps{
         script{
             if(params.ui_app){
+            #git credentialsid is the id given while adding github sourcecode repository(e.g. https://github.com/NarenBanu/cicdpipeline.git username and password into the git global credentials"
             git branch: '$BRANCH' , credentialsId: '', url: 'https://github.com/NarenBanu/cicdpipeline.git'
         }else{
             echo "please select app in build parameters"
